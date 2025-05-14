@@ -1,48 +1,33 @@
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(CharacterController))]
 public class PlayerMovement : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float rotationSpeed = 100f;
+    [Header("Movement Settings")]
+    public float walkSpeed = 3f;
+    public float runSpeed = 6f;
+    public float rotationSpeed = 120f;
 
-    private Rigidbody rb;
-    private float currentY;
+    private CharacterController controller;
+    private float currentSpeed;
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-
-        // Lock all unwanted physics-based motion
-        rb.constraints = RigidbodyConstraints.FreezePositionY |
-                         RigidbodyConstraints.FreezeRotationX |
-                         RigidbodyConstraints.FreezeRotationZ;
-
-        // Cache initial Y rotation
-        currentY = transform.eulerAngles.y;
+        controller = GetComponent<CharacterController>();
     }
 
     void Update()
     {
-        // Handle rotation input (left/right keys)
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            currentY -= rotationSpeed * Time.deltaTime;
-        }
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            currentY += rotationSpeed * Time.deltaTime;
-        }
+        currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
 
-        // Apply rotation only on Y-axis
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, currentY, transform.eulerAngles.z);
+        // Forward/Back movement (Z axis)
+        float moveInput = Input.GetAxis("Vertical");
+        Vector3 move = transform.forward * moveInput * currentSpeed;
 
-        // Move forward
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.position += transform.forward * moveSpeed * Time.deltaTime;
-        }
+        // Y-axis rotation (A/D)
+        float rotateInput = Input.GetAxis("Horizontal");
+        transform.Rotate(0f, rotateInput * rotationSpeed * Time.deltaTime, 0f);
 
-        // --- Add running logic here if needed ---
+        controller.SimpleMove(move);
     }
 }

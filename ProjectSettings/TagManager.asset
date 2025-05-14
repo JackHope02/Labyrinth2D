@@ -11,8 +11,8 @@ TagManager:
   - Player
   - Water
   - UI
-  - 
-  - 
+  - Walls
+  - Rubble
   - 
   - 
   - 
@@ -41,5 +41,13 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Player
+    uniqueID: 3113497421
+    locked: 0
+  - name: Non-Player
+    uniqueID: 2853619935
+    locked: 0
   m_RenderingLayers:
   - Default
+  - Walls
+  - Sprites
